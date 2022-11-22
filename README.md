@@ -1,4 +1,4 @@
-# Exercise Name
+# Chessington
 
 1. Fork this repo
     * Go to this repo's GitHub page ({url here})
@@ -19,3 +19,6 @@ Your trainer can show you how to do this, if you need any help.
 
 5. Run this command to run your code:  
 `./gradlew run`
+
+6. Run this command to run your tests:  
+   `./gradlew test`
