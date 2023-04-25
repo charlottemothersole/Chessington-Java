@@ -29,33 +29,56 @@ public class Pawn extends AbstractPiece {
         return colour;
     }
 
+    public boolean isSpaceEmpty(Board board, Coordinates moveTo) {
+        boolean isSpaceEmpty;
+            if(board.get(moveTo) != null) {
+                isSpaceEmpty = false;
+            } else {
+                isSpaceEmpty = true;
+            }
+        return isSpaceEmpty;
+    }
+
     @Override
     public List<Move> getAllowedMoves(Coordinates from, Board board) {
-        //consider refactoring with isFirstMove method in AbstractPiece
-        int row = from.getRow();
-        System.out.println(row);
+        //consider refactoring with isFirstMove method in AbstractPiece?
+        //could add direction var to indicate whether + or -
+        // int direction = (this.colour == PlayerColour.WHITE) ? -1 : 1;
+        // Coordinates oneSquareAhead = from.plus(direction, 0);
+        // Coordinates twoSquaresAhead = from.plus(direction * 2, 0);
+        //ASK HOW THIS WORKS
+        // int direction = (this.colour == PlayerColour.WHITE) ? -1 : 1;
         Move validMove;
         //empty list for the possible moves
         ArrayList<Move> possibleMoves = new ArrayList<>();
         //if piece is white, row num -1. If black, +1.
         if(checkColour() == "WHITE") {
+            //check if piece is in front
             //if pawn on row 6 hasnt yet moved, can also move 2 spaces forward
             if(isFirstMove(from)) {
                 validMove = new Move(from, from.plus(-2, 0));
-                possibleMoves.add(validMove);
+                if(isSpaceEmpty(board, from.plus(-2, 0))) {
+                    possibleMoves.add(validMove);
+                }
             }
             // add the single space valid move too
             validMove = new Move(from, from.plus(-1, 0));
-            possibleMoves.add(validMove);
+            if(isSpaceEmpty(board, from.plus(-1, 0))) {
+                possibleMoves.add(validMove);
+            }
         } else if (checkColour() == "BLACK") {
             //if pawn on row 1 hasnt yet moved, can also move 2 spaces forward
             if(isFirstMove(from)) {
                 validMove = new Move(from, from.plus(2, 0));
-                possibleMoves.add(validMove);
+                if(isSpaceEmpty(board, from.plus(2, 0))) {
+                    possibleMoves.add(validMove);
+                }
             }
             // add the single space valid move too
             validMove = new Move(from, from.plus(1, 0));
-            possibleMoves.add(validMove);
+            if(isSpaceEmpty(board, from.plus(1, 0))) {
+                possibleMoves.add(validMove);
+            }
         }
         return possibleMoves;
     }
