@@ -39,6 +39,18 @@ public class Pawn extends AbstractPiece {
         return isSpaceEmpty;
     }
 
+    public boolean isWithinBoardBoundary(int potentialMoveRow, int finalRow) {
+        boolean isWithinBoardBoundary;
+        if(checkColour() == "WHITE" && potentialMoveRow < finalRow) {
+            isWithinBoardBoundary = false;
+        } else if (checkColour() == "BLACK" && potentialMoveRow > finalRow) {
+            isWithinBoardBoundary = false;
+        } else {
+            isWithinBoardBoundary = true;
+        }
+        return isWithinBoardBoundary;
+    }
+
     @Override
     public List<Move> getAllowedMoves(Coordinates from, Board board) {
         //consider refactoring with isFirstMove method in AbstractPiece?
@@ -51,19 +63,16 @@ public class Pawn extends AbstractPiece {
         ArrayList<Move> availableMoves = new ArrayList<>();
         //check if piece is white to decide if it is first move of piece or not
         if(checkColour() == "WHITE") {
-            int finalRow = 0;
             //if pawn on row 6 hasnt yet moved, can move 2 spaces forward
-            if(isFirstMove(from)) {
-                //if potential move is not outside the board boundary, continue
-                while(twoSquaresAhead.getRow() > finalRow) {
-                    potentialMove = new Move(from, twoSquaresAhead);
-                    //if potential space is == null then can move to it
-                    if(isSpaceEmpty(board, twoSquaresAhead)) {
-                        availableMoves.add(potentialMove);
-                    }
+            if(isFirstMove(from) && isWithinBoardBoundary(twoSquaresAhead.getRow(), 0)) {
+            //if potential move is not outside the board boundary, continue
+                potentialMove = new Move(from, twoSquaresAhead);
+                //if potential space is == null then can move to it
+                if(isSpaceEmpty(board, twoSquaresAhead)) {
+                    availableMoves.add(potentialMove);
                 }
             }
-            while(oneSquareAhead.getRow() > finalRow) {
+            if(isWithinBoardBoundary(oneSquareAhead.getRow(), 0)) {
                 // add the single space valid move too
                 potentialMove = new Move(from, oneSquareAhead);
                 if(isSpaceEmpty(board, oneSquareAhead)) {
@@ -71,18 +80,14 @@ public class Pawn extends AbstractPiece {
                 }
             }
         } else if (checkColour() == "BLACK") {
-            int finalRow = 8;
             //if pawn on row 1 hasnt yet moved, can also move 2 spaces forward
-            if(isFirstMove(from)) {
-                while(twoSquaresAhead.getRow() < finalRow) {
-                    potentialMove = new Move(from, twoSquaresAhead);
-                    if(isSpaceEmpty(board, twoSquaresAhead)) {
-                        availableMoves.add(potentialMove);
-                    }
+            if(isFirstMove(from) && isWithinBoardBoundary(twoSquaresAhead.getRow(), 7)) {
+                potentialMove = new Move(from, twoSquaresAhead);
+                if(isSpaceEmpty(board, twoSquaresAhead)) {
+                    availableMoves.add(potentialMove);
                 }
-                
             }
-            while(oneSquareAhead.getRow() < finalRow) {
+            if(isWithinBoardBoundary(oneSquareAhead.getRow(), 7)) {
                 potentialMove = new Move(from, oneSquareAhead);
                 if(isSpaceEmpty(board, oneSquareAhead)) {
                     availableMoves.add(potentialMove);
