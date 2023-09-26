@@ -32,6 +32,7 @@ public class Pawn extends AbstractPiece {
     public boolean isSpaceEmpty(Board board, Coordinates moveTo) {
         boolean isSpaceEmpty;
             if(board.get(moveTo) != null) {
+                Piece blockerPosition = board.get(moveTo);
                 isSpaceEmpty = false;
             } else {
                 isSpaceEmpty = true;
@@ -55,18 +56,26 @@ public class Pawn extends AbstractPiece {
     public List<Move> getAllowedMoves(Coordinates from, Board board) {
         //consider refactoring with isFirstMove method in AbstractPiece?
         //ASK HOW THIS WORKS
-        int direction = (this.colour == PlayerColour.WHITE) ? -1 : 1;
-        Coordinates oneSquareAhead = from.plus(direction, 0);
-        Coordinates twoSquaresAhead = from.plus(direction * 2, 0);
+        //Could use this in the colour checker too
+        int verticalDirection = (this.colour == PlayerColour.WHITE) ? -1 : 1;
+        int horizontalLeft = -1;
+        int horizontalRight = 1;
+        //Proposed move options
+        Coordinates oneSquareAhead = from.plus(verticalDirection, 0);
+        Coordinates twoSquaresAhead = from.plus(verticalDirection * 2, 0);
+        Coordinates oneSquareDiagonalLeft = from.plus(verticalDirection, horizontalLeft);
+        Coordinates oneSquareDiagonalRight = from.plus(verticalDirection, horizontalRight);
         Move potentialMove;
         //empty list for the possible moves
         ArrayList<Move> availableMoves = new ArrayList<>();
         //check if piece is white to decide if it is first move of piece or not
         if(checkColour() == "WHITE") {
-            //if pawn on row 6 hasnt yet moved, can move 2 spaces forward
+            //if pawn on row 6 hasnt yet moved, and is within upper board boundary, can move 2 spaces forward
             if(isFirstMove(from) && isWithinBoardBoundary(twoSquaresAhead.getRow(), 0)) {
-            //if potential move is not outside the board boundary, continue
+                // ArrayList<Move> potentialMoves= new ArrayList<>();
+                //potential move from current coords to two squares forward
                 potentialMove = new Move(from, twoSquaresAhead);
+                // potentialMoves.add(potentialMove);
                 //if potential space is == null then can move to it
                 if(isSpaceEmpty(board, twoSquaresAhead)) {
                     availableMoves.add(potentialMove);
@@ -79,6 +88,13 @@ public class Pawn extends AbstractPiece {
                     availableMoves.add(potentialMove);
                 }
             }
+            //add left diagonal move
+            //this doesnt yet check if another piece is occupying the potential space
+            Move leftPotentialMove = new Move(from, oneSquareDiagonalLeft);
+            availableMoves.add(leftPotentialMove);
+            Move rightPotentialMove = new Move(from, oneSquareDiagonalRight);
+            availableMoves.add(rightPotentialMove);
+
         } else if (checkColour() == "BLACK") {
             //if pawn on row 1 hasnt yet moved, can also move 2 spaces forward
             if(isFirstMove(from) && isWithinBoardBoundary(twoSquaresAhead.getRow(), 7)) {
@@ -93,6 +109,11 @@ public class Pawn extends AbstractPiece {
                     availableMoves.add(potentialMove);
                 }
             }
+            //the horizontal direction eg right/left is per the screen, not the color.
+            Move leftPotentialMove = new Move(from, oneSquareDiagonalLeft);
+            availableMoves.add(leftPotentialMove);
+            Move rightPotentialMove = new Move(from, oneSquareDiagonalRight);
+            availableMoves.add(rightPotentialMove);
         }
         return availableMoves;
     }
