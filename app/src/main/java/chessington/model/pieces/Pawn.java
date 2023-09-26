@@ -49,33 +49,44 @@ public class Pawn extends AbstractPiece {
         Move potentialMove;
         //empty list for the possible moves
         ArrayList<Move> availableMoves = new ArrayList<>();
-        //if piece is white, row num -1. If black, +1.
+        //check if piece is white to decide if it is first move of piece or not
         if(checkColour() == "WHITE") {
-            //check if piece is in front
-            //if pawn on row 6 hasnt yet moved, can also move 2 spaces forward
+            int finalRow = 0;
+            //if pawn on row 6 hasnt yet moved, can move 2 spaces forward
             if(isFirstMove(from)) {
-                potentialMove = new Move(from, twoSquaresAhead);
-                if(isSpaceEmpty(board, twoSquaresAhead)) {
-                    availableMoves.add(potentialMove);
+                //if potential move is not outside the board boundary, continue
+                while(twoSquaresAhead.getRow() > finalRow) {
+                    potentialMove = new Move(from, twoSquaresAhead);
+                    //if potential space is == null then can move to it
+                    if(isSpaceEmpty(board, twoSquaresAhead)) {
+                        availableMoves.add(potentialMove);
+                    }
                 }
             }
-            // add the single space valid move too
-            potentialMove = new Move(from, oneSquareAhead);
-            if(isSpaceEmpty(board, oneSquareAhead)) {
-                availableMoves.add(potentialMove);
+            while(oneSquareAhead.getRow() > finalRow) {
+                // add the single space valid move too
+                potentialMove = new Move(from, oneSquareAhead);
+                if(isSpaceEmpty(board, oneSquareAhead)) {
+                    availableMoves.add(potentialMove);
+                }
             }
         } else if (checkColour() == "BLACK") {
+            int finalRow = 8;
             //if pawn on row 1 hasnt yet moved, can also move 2 spaces forward
             if(isFirstMove(from)) {
-                potentialMove = new Move(from, twoSquaresAhead);
-                if(isSpaceEmpty(board, twoSquaresAhead)) {
+                while(twoSquaresAhead.getRow() < finalRow) {
+                    potentialMove = new Move(from, twoSquaresAhead);
+                    if(isSpaceEmpty(board, twoSquaresAhead)) {
+                        availableMoves.add(potentialMove);
+                    }
+                }
+                
+            }
+            while(oneSquareAhead.getRow() < finalRow) {
+                potentialMove = new Move(from, oneSquareAhead);
+                if(isSpaceEmpty(board, oneSquareAhead)) {
                     availableMoves.add(potentialMove);
                 }
-            }
-            // add the single space valid move too
-            potentialMove = new Move(from, oneSquareAhead);
-            if(isSpaceEmpty(board, oneSquareAhead)) {
-                availableMoves.add(potentialMove);
             }
         }
         return availableMoves;
